@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+
+<!-- Project Name -->
+<project default="all" basedir=".">
+
+<echo message="pulling in property files"/>
+	
+	<!-- set actual directory -->
+	<property file="build.properties"/>
+
+	<!-- property library -->
+	<property name="lib_common" value="${LIBRARY_DIR}/lib_common"/>
+	<property name="lib_spring" value="${LIBRARY_DIR}/lib_spring"/>
+	<property name="lib_hibernate" value="${LIBRARY_DIR}/lib_hibernate"/>
+	<property name="lib_adaptor" value="${LIBRARY_DIR}/lib_adaptor"/>		
+	
+	<property name="user_library" value="${LIBRARY_DIR}/user_library"/>
+	
+	<property name="web" value="${WEB_DIR}/lib"/>
+	
+	<!-- classpath define -->
+	<path id="compile.classpath">
+		<fileset dir="${lib_common}">
+			<include name="**/*.jar"/>
+		</fileset>
+		
+		<fileset dir="${lib_spring}">
+			<include name="**/*.jar"/>
+		</fileset>
+		
+		<fileset dir="${lib_hibernate}">
+			<include name="**/*.jar"/>
+		</fileset>
+		
+		<fileset dir="${lib_adaptor}">
+			<include name="**/*.jar"/>
+		</fileset>
+
+		
+		<fileset dir="${user_library}">
+			<include name="**/*.jar"/>
+		</fileset>
+		
+		<!-- define build compile path -->
+		<pathelement location="${basedir}/../target/classes"/>
+	</path>
+	
+	<!-- initialize output folder (clear) -->
+	<target name="init">
+		<!-- class folder -->
+		<delete dir="${basedir}/../target/classes"/>
+		<mkdir dir="${basedir}/../target/classes"/>
+	</target>
+	
+	<!-- compile -->
+	<target name="compile">
+		<!-- compile main -->
+		<javac encoding="UTF-8" debug="true" srcdir="${basedir}/../src/main/java" destdir="${basedir}/../target/classes" fork="yes" memoryMaximumSize="256m" includeantruntime = "false">
+			<classpath>
+				<path refid="compile.classpath"/>
+			</classpath>
+			<!--
+			<compilerarg value="-Xlint:unchecked" />
+			-->
+		</javac>
+	</target>
+
+	<!-- packaging(*.jar) class to library folder -->
+	<target name="package">
+
+		<!-- for lib_unimes -->
+		<!--
+		<delete file="${user_library}/lib_common-0.0.1.jar"/>
+		-->
+		<jar jarfile="${user_library}/commons_utils.jar">
+			<fileset dir="${basedir}/../target/classes">
+				<exclude name="**/test/"/>
+			</fileset>
+		</jar>
+
+	</target>
+	
+	<target name="all" depends="init, compile, package"/>
+  
+</project>
+
